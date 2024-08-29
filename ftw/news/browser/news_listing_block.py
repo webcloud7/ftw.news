@@ -71,6 +71,10 @@ class NewsListingBlockView(BaseBlock):
         }}
         parent = aq_parent(aq_inner((self.context)))
 
+        filter_review_state = getattr(self.context, 'filter_review_state', [])
+        if filter_review_state:
+            query['review_state'] = filter_review_state
+
         # Default page of a plone root
         if not IPloneSiteRoot.providedBy(parent) and IPloneSiteRoot.providedBy(parent.aq_parent):
             if parent.restrictedTraverse('@@plone_context_state').is_default_page():

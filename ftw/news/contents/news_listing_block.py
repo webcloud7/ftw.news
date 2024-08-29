@@ -15,6 +15,8 @@ from z3c.relationfield import RelationChoice
 from zope import schema
 from zope.interface import alsoProvides
 from zope.interface import implements
+from zope.schema.vocabulary import SimpleVocabulary
+from zope.schema.vocabulary import SimpleTerm
 
 
 class FilterByPathSelectable(DefaultSelectable):
@@ -22,6 +24,14 @@ class FilterByPathSelectable(DefaultSelectable):
     def is_selectable(self):
         """ Allow to reference any path"""
         return True
+
+
+status_vocab = SimpleVocabulary([
+    SimpleTerm(title=u'Ver\xf6ffentlicht', value='staging_intranet_workflow--STATUS--veroffentlicht'),
+    SimpleTerm(title=u'Entwurf', value='staging_intranet_workflow--STATUS--entwurf'),
+    SimpleTerm(title=u'In \xdcberarbeitung', value='staging_intranet_workflow--STATUS--in-uberarbeitung'),
+    SimpleTerm(title=u'Arbeitskopie', value='staging_intranet_workflow--STATUS--arbeitskopie'),
+])
 
 
 class INewsListingBlockSchema(INewsListingBaseSchema):
@@ -68,6 +78,16 @@ class INewsListingBlockSchema(INewsListingBaseSchema):
                       default=u'Shows the review state for each item.'),
         default=False,
         required=False,
+    )
+
+    filter_review_state = schema.List(
+        title=u'Status',
+        value_type=schema.Choice(
+            vocabulary=status_vocab
+        ),
+        required=False,
+        missing_value=[],
+        default=[],
     )
 
 
